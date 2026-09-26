@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#23443B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Richmond Rd">
+<title>Richmond Rd</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2323443B'/%3E%3Crect x='14' y='14' width='36' height='8' rx='3' fill='%23F2C230'/%3E%3Cpath d='M18 26h28l-3 26H21z' fill='%23EEF1EC'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mist:#EEF1EC; --card:#FFFFFF; --ink:#1B2A26; --soft:#5E6E68; --line:#D5DCD6;
+  --gum:#23443B; --gum2:#2F5D50; --yellow:#F2C230; --red:#C8412F; --green:#4E8A3E;
+  --radius:14px; --head:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--mist);color:var(--ink);font:16px/1.45 var(--body);-webkit-text-size-adjust:100%}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:var(--head);line-height:1.1;margin:0}
+h1{font-size:30px;font-weight:800;letter-spacing:-.01em}
+h2{font-size:21px;font-weight:700;margin:26px 0 10px}
+h3{font-size:17px;font-weight:700}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header.top{background:var(--gum);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 0 18px}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+header.top .who{font-size:14px;opacity:.8}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin:12px 0;border:1px solid var(--line)}
+.muted{color:var(--soft)}
+.small{font-size:14px}
+.row{display:flex;gap:10px;align-items:center}
+.between{justify-content:space-between}
+.wrapflex{flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:11px 16px;background:var(--gum);color:#fff;font-weight:600}
+.btn.alt{background:#fff;color:var(--gum);border:1.5px solid var(--gum)}
+.btn.warn{background:var(--red)}
+.btn.ok{background:var(--green)}
+.btn.sm{padding:7px 12px;font-size:14px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--gum2);text-decoration:underline;padding:4px}
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=password],select,textarea{
+  width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+textarea{min-height:80px;resize:vertical}
+label.f{display:block;font-size:14px;font-weight:600;margin:12px 0 5px}
+.chip{display:inline-block;font-size:13px;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--mist);color:var(--ink);white-space:nowrap}
+.chip.y{background:#FCEFC0}.chip.r{background:#F6D5CF;color:#7A2418}.chip.g{background:#DCEBD5;color:#284D1F}
+/* Hero: the lid band */
+.hero{background:var(--card);border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;margin:16px 0}
+.hero .lid{height:10px;background:var(--yellow)}
+.hero .in{padding:16px}
+.hero .name{font-family:var(--head);font-weight:800;font-size:44px;line-height:1;letter-spacing:-.02em;margin:6px 0 2px}
+.strip{display:flex;gap:6px;margin-top:14px}
+.strip>span{flex:1;text-align:center;font-size:13px;padding:6px 0;border-radius:8px;background:var(--mist);color:var(--soft)}
+.strip>span.on{background:var(--gum);color:#fff;font-weight:700}
+.duty{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.duty .card{margin:0}
+/* nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:10}
+nav.tabs .wrap{display:flex;padding:0}
+nav.tabs button{flex:1;background:none;border:0;padding:10px 0 12px;font-size:12px;color:var(--soft);display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+nav.tabs button svg{width:24px;height:24px}
+nav.tabs button.on{color:var(--gum);font-weight:700}
+nav.tabs button.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;background:var(--yellow);border-radius:0 0 3px 3px}
+nav.tabs .dot{position:absolute;top:6px;left:56%;width:9px;height:9px;border-radius:50%;background:var(--red)}
+/* lists */
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.list .grow{flex:1;min-width:0}
+.check{width:26px;height:26px;border-radius:8px;border:2px solid var(--gum2);background:#fff;flex:none;display:grid;place-items:center;padding:0}
+.check.on{background:var(--gum2)}
+.check.on::after{content:"";width:7px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.done-text{text-decoration:line-through;color:var(--soft)}
+.area{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:8px 0}
+.area .n{font-family:var(--head);font-weight:800;font-size:18px;width:30px;height:30px;border-radius:50%;background:var(--mist);display:grid;place-items:center;flex:none}
+.area.ok .n{background:var(--green);color:#fff}
+.steps{counter-reset:s;list-style:none;margin:0;padding:0}
+.steps li{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.warnbox{border-left:5px solid var(--red);background:#FBEDEA;padding:12px 14px;border-radius:8px;margin:12px 0;font-size:15px}
+.tipbox{border-left:5px solid var(--yellow);background:#FDF6DC;padding:12px 14px;border-radius:8px;margin:12px 0;font-size:15px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.photos .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--mist)}
+.photos img{width:100%;height:100%;object-fit:cover;display:block}
+.photos .x{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:26px;height:26px}
+.addph{aspect-ratio:1;border:2px dashed var(--gum2);border-radius:10px;display:grid;place-items:center;color:var(--gum2);font-weight:600;font-size:14px;text-align:center;cursor:pointer}
+.addph input{display:none}
+.feed li .t{font-weight:600}
+.pin{letter-spacing:.4em;font-size:24px;text-align:center}
+.who-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.who-grid button{padding:22px 10px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-family:var(--head);font-weight:700;font-size:20px}
+.who-grid button.on{border-color:var(--gum);background:var(--gum);color:#fff}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:15px;z-index:50;max-width:90vw}
+.modal{position:fixed;inset:0;background:rgba(20,30,27,.55);display:flex;align-items:flex-end;justify-content:center;z-index:40}
+.modal .sheet{background:var(--mist);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom))}
+.lightbox{position:fixed;inset:0;background:#000;z-index:60;display:grid;place-items:center}
+.lightbox img{max-width:100%;max-height:100%}
+table.grid{width:100%;border-collapse:collapse;font-size:14px}
+table.grid td,table.grid th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.scroll{overflow-x:auto}
+@media (prefers-reduced-motion:no-preference){.hero .lid{animation:lid .6s ease-out}@keyframes lid{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1)}}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+// ------------------------------------------------------------------
+// Cleaning areas, from Schedule B (House Cleaning Guide).
+// ------------------------------------------------------------------
+const SAFETY = 'Never mix Harpic (bleach) with CLR or grout cleaner: it makes chlorine gas. One product at a time, rinse with water, then the next. Gloves on, fan on.';
+const AREAS = {
+  kitchen: { name: 'Kitchen', photo: true, steps: [
+    'Clear the benchtop. Wipe the stone benchtop and splashback with a damp microfibre cloth and a drop of dishwashing liquid, then dry.',
+    'Gas cooktop: lift off the trivets and burner caps, soak in hot soapy water, scrub with the scour side. Wipe the cooktop, dry, and seat everything back properly.',
+    'Microwave: heat a bowl of water (a splash of white vinegar helps) for 3 minutes, leave the door shut 2 minutes, then wipe out the inside and the turntable.',
+    'Wipe the outside of the fridge, kettle, grill and air fryer, including the handles.',
+    'Wipe cupboard doors and handles with the diluted floor cleaner spray, then a dry cloth.',
+    'Clean the sink and tap. Empty and wash the sink strainer.',
+    'Take out the kitchen bin, wash it if it is dirty or smells, and put in a new bag.',
+    'Throw out anything expired in the shared areas of the fridge.'],
+    never: 'No CLR, no bleach and no scour side on the stone benchtop. The dishwasher is not used.' },
+  living: { name: 'Living, dining and entrance', photo: true, steps: [
+    'Dust surfaces, the TV unit and the window sills with a dry microfibre cloth.',
+    'Wipe the dining table and chairs.',
+    'Shoe rack: one pair per person. Extras go back to their owner\'s room.',
+    'Shake out or vacuum the rug.',
+    'Dust the artificial plants if needed.'] },
+  floors: { name: 'Floors', photo: true, steps: [
+    'Vacuum every common-area floor first, including corners, under the table and behind the doors.',
+    'Fill the Sabco bucket with warm water and one capful of Long Life Floor Cleaner. More is not better.',
+    'Tiles (living, kitchen, entrance, laundry): mop, rinsing and wringing often.',
+    'Vinyl and laminate (hallway): wring the mop until it is only damp. Wipe up any puddle straight away.',
+    'Open doors and windows to dry. Nobody walks on wet floors.',
+    'Rinse the bucket and mop pad and leave them to dry.'],
+    never: 'Standing water on vinyl or laminate swells the boards. That is a bond claim, not wear and tear.' },
+  stairs: { name: 'Stairs, hallway and skirting', photo: true, steps: [
+    'Vacuum each stair, including the edges and corners.',
+    'Wipe the handrail and stair edges with a damp cloth.',
+    'Wipe skirting boards, light switches and door handles with the diluted spray.',
+    'Mop the stairs with a well-wrung mop, top step first.'] },
+  laundry: { name: 'Laundry', photo: true, steps: [
+    'Wipe the bench, sink, and the top and front of the washing machine.',
+    'Leave the washing machine door and detergent drawer open to dry.',
+    'Sweep or vacuum behind the door, then mop.'] },
+  deck: { name: 'Deck and outdoor', photo: true, steps: [
+    'Sweep the deck and the entrance. Remove leaves, butts and rubbish.',
+    'Wipe the outdoor table and chairs.',
+    'Check nothing is stored under the deck or left lying around.'] },
+  glass: { name: 'Glass and doors', photo: true, steps: [
+    'Glass sliding door: spray, squeegee top to bottom, dry the edges with microfibre.',
+    'Vacuum the sliding door track.',
+    'Wipe fingerprints off doors, handles and switches.'] },
+  finish: { name: 'Cloths, bins and put away', photo: false, steps: [
+    'Wash the dish cloths, microfibre cloths and mop pads: hot wash with Surf, no Fluffy. Hang to dry.',
+    'Bins to the kerb Monday night, back in on Tuesday.',
+    'Put all products back in the laundry cupboard, lids closed.'] },
+  monthly: { name: 'Monthly jobs (first week of the month)', photo: true, steps: [
+    'Grout: gloves and fan on. Long Life Grout Cleaner on the shower and bathroom floor grout, scrub, rinse well. Never on the same day as Harpic on the same area.',
+    'Fridge: empty the shared shelves, wash shelves and drawers with warm soapy water, dry, put back.',
+    'Rangehood: soak the filters in hot soapy water, scrub, rinse, dry before refitting.',
+    'Washing machine: run an empty hot cycle, wipe the door seal, clean the detergent drawer.',
+    'Window and door tracks: vacuum, then wipe.',
+    'Bins: hose out and wash the kitchen and outside bins.',
+    'Walls and doors: spot-clean marks with a damp cloth. No scourers on paint.',
+    'Pests: check under the sink, behind the fridge and in cupboards. Report anything straight away.'] },
+  bathroom: { name: 'Shared bathroom and toilet', photo: true, steps: [
+    'Gloves on. Window open or fan on.',
+    'Toilet: Harpic under the rim, leave 10 minutes. Scrub, flush. Wipe the seat both sides, lid, cistern, button and base with a bathroom-only cloth.',
+    'Shower: CLR on the screen, taps, head and tiles, 2 minutes, soft sponge, rinse well, squeegee dry. No CLR where Harpic is still on a surface.',
+    'Clear hair from the shower drain.',
+    'Basin and vanity: basin, tap, vanity top, mirror. Dry the mirror with microfibre.',
+    'Empty the bathroom bin.',
+    'Replace toilet paper if low, and add more to the shopping list.',
+    'Shake out the bath mat and toilet mat. Mop the floor last.'],
+    never: 'Leave the door open and the fan on after showers so steam does not get trapped. Turn the fan off after about 15 minutes.' },
+};
+const HOUSE_AREAS = ['kitchen', 'living', 'floors', 'stairs', 'laundry', 'deck', 'glass', 'finish'];
+function areasFor(rosterId, weekStart) {
+  if (rosterId === 'bathroom') return ['bathroom'];
+  const day = +weekStart.slice(8, 10);
+  return day <= 7 ? [...HOUSE_AREAS, 'monthly'] : HOUSE_AREAS;
+}
+
+// ------------------------------------------------------------------
+// Helpers
+// ------------------------------------------------------------------
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const addDays = (s, n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const daysBetween = (a, b) => Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 864e5);
+const dowOf = s => new Date(s + 'T00:00:00Z').getUTCDay();
+const weekStartOf = s => addDays(s, -dowOf(s));
+const DN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fmt = s => { const d = new Date(s + 'T00:00:00Z'); return `${DN[d.getUTCDay()]} ${d.getUTCDate()} ${MN[d.getUTCMonth()]}`; };
+const ago = t => { const m = Math.round((Date.now() - t) / 6e4); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
+const money = n => '$' + Number(n).toFixed(2);
+function assignee(r, ws) {
+  if (!r || !r.members?.length) return null;
+  if (r.overrides?.[ws]) return r.overrides[ws];
+  const w = Math.floor(daysBetween(weekStartOf(r.startDate), ws) / 7);
+  if (w < 0) return null;
+  const m = r.members; return m[((w % m.length) + m.length) % m.length];
+}
+function occurrences(def, from, to) {
+  const out = []; if (!def.firstDue) return out;
+  if (!def.everyDays) { if (def.firstDue >= from && def.firstDue <= to) out.push(def.firstDue); return out; }
+  const k = Math.max(0, Math.ceil(daysBetween(def.firstDue, from) / def.everyDays));
+  for (let d = addDays(def.firstDue, k * def.everyDays); d <= to; d = addDays(d, def.everyDays)) out.push(d);
+  return out;
+}
+
+// ------------------------------------------------------------------
+// State and API
+// ------------------------------------------------------------------
+let TOKEN = localStorage.getItem('rr_token') || '';
+let S = null;              // server state
+let TAB = 'home';
+let VIEW = null;           // sub-view inside a tab
+let STATUS = null;         // setup status
+let BUSY = false;
+
+async function api(path, body) {
+  const res = await fetch('/api/' + path, {
+    method: body ? 'POST' : 'GET',
+    headers: { 'content-type': 'application/json', ...(TOKEN ? { authorization: 'Bearer ' + TOKEN } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => ({ error: 'The server did not answer. Check your connection.' }));
+  if (res.status === 401 && path !== 'login') { signOut(); throw new Error(data.error); }
+  if (!res.ok) throw new Error(data.error || 'Request failed.');
+  return data;
+}
+async function act(type, payload = {}, okMsg) {
+  if (BUSY) return;
+  BUSY = true;
+  try { S = await api('action', { type, ...payload }); if (okMsg) toast(okMsg); render(); }
+  catch (e) { toast(e.message); }
+  finally { BUSY = false; }
+}
+async function refresh() { try { S = await api('state'); render(); } catch (e) { toast(e.message); } }
+function signOut() { TOKEN = ''; localStorage.removeItem('rr_token'); S = null; boot(); }
+function toast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
+}
+const nameOf = id => S?.users.find(u => u.id === id)?.name || STATUS?.users?.find(u => u.id === id)?.name || id;
+const isAdmin = () => !!S?.users.find(u => u.id === S.me)?.admin;
+const photoUrl = id => `/api/photo/${id}?t=${encodeURIComponent(TOKEN)}`;
+const cleanRec = (rid, ws) => S.cleanings.find(c => c.rosterId === rid && c.weekStart === ws);
+
+// ------------------------------------------------------------------
+// Boot, setup, login
+// ------------------------------------------------------------------
+async function boot() {
+  try { STATUS = await api('status'); } catch (e) { $('#app').innerHTML = `<div class="wrap"><div class="card">${esc(e.message)}</div></div>`; return; }
+  if (!STATUS.ready) return renderSetup();
+  if (!TOKEN) return renderLogin();
+  try { S = await api('state'); render(); } catch { renderLogin(); }
+}
+
+function renderSetup() {
+  const u = STATUS.users;
+  $('#app').innerHTML = `
+  <header class="top"><div class="wrap"><h1>Set up the house</h1></div></header>
+  <div class="wrap">
+    <div class="card">
+      <p>One-time setup. Give each person a 4 to 8 digit PIN and set the order of the house cleaning roster. The first person on the list is on this week.</p>
+      <label class="f">Setup code (the SETUP_CODE set in Netlify)</label>
+      <input type="password" id="code" autocomplete="off">
+      ${u.map(x => `<label class="f">PIN for ${esc(x.name)}</label><input type="password" inputmode="numeric" class="pin" data-pin="${x.id}" maxlength="8">`).join('')}
+      <h3 style="margin-top:18px">Cleaning order</h3>
+      ${[0, 1, 2, 3].map(i => `<label class="f">Week ${i + 1}</label><select data-order="${i}">${u.map((x, j) => `<option value="${x.id}" ${i === j ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>`).join('')}
+      <p class="small muted">The shared bathroom roster uses the same order without Bernard.</p>
+      <button class="btn block" id="go">Set up the house</button>
+    </div>
+  </div>`;
+  $('#go').onclick = async () => {
+    const pins = {}; document.querySelectorAll('[data-pin]').forEach(i => pins[i.dataset.pin] = i.value.trim());
+    const order = [...document.querySelectorAll('[data-order]')].map(s => s.value);
+    if (new Set(order).size !== 4) return toast('Each person must appear once in the cleaning order.');
+    try { await api('setup', { code: $('#code').value, pins, order }); toast('House set up. Sign in.'); boot(); }
+    catch (e) { toast(e.message); }
+  };
+}
+
+function renderLogin() {
+  let pick = localStorage.getItem('rr_last') || '';
+  $('#app').innerHTML = `
+  <header class="top"><div class="wrap"><div><h1>Richmond Rd</h1><div class="who">1/107 Richmond Road, Morningside</div></div></div></header>
+  <div class="wrap">
+    <h2>Who are you?</h2>
+    <div class="who-grid">${STATUS.users.map(u => `<button data-u="${u.id}" class="${u.id === pick ? 'on' : ''}">${esc(u.name)}</button>`).join('')}</div>
+    <label class="f" for="pin">PIN</label>
+    <input id="pin" type="password" inputmode="numeric" class="pin" maxlength="8" autocomplete="current-password">
+    <p><button class="btn block" id="go">Sign in</button></p>
+  </div>`;
+  document.querySelectorAll('[data-u]').forEach(b => b.onclick = () => {
+    pick = b.dataset.u; document.querySelectorAll('[data-u]').forEach(x => x.classList.toggle('on', x === b)); $('#pin').focus();
+  });
+  const go = async () => {
+    if (!pick) return toast('Choose your name first.');
+    try {
+      const r = await api('login', { user: pick, pin: $('#pin').value });
+      TOKEN = r.token; localStorage.setItem('rr_token', TOKEN); localStorage.setItem('rr_last', pick);
+      S = await api('state'); TAB = 'home'; render();
+    } catch (e) { toast(e.message); }
+  };
+  $('#go').onclick = go;
+  $('#pin').onkeydown = e => { if (e.key === 'Enter') go(); };
+}
+
+// ------------------------------------------------------------------
+// Main render
+// ------------------------------------------------------------------
+const ICONS = {
+  home: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  clean: '<path d="M14 3l7 7M6 21l5-5M12 9l3 3-7 7-4 1 1-4z"/>',
+  shop: '<path d="M4 6h16l-2 11H6zM9 6a3 3 0 0 1 6 0"/>',
+  dates: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  money: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+  me: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+};
+const TABS = [['home', 'Home'], ['clean', 'Cleaning'], ['shop', 'Shopping'], ['dates', 'Notices'], ['money', 'Payments'], ['me', 'Me']];
+
+function todo() {
+  const me = S.me, t = { clean: 0, money: 0, dates: 0 };
+  for (const c of S.cleanings) if (c.status === 'submitted' && c.user !== me && !c.approvals?.[me]) t.clean++;
+  t.clean += S.swaps.filter(s => s.to === me).length;
+  const ws = weekStartOf(S.today);
+  for (const r of Object.values(S.rosters)) {
+    if (assignee(r, ws) === me) { const c = cleanRec(r.id, ws); if (!c || ['draft', 'rejected'].includes(c.status)) t.clean++; }
+  }
+  for (const d of S.payments.defs) for (const due of occurrences(d, addDays(S.today, -30), addDays(S.today, 3)))
+    if (d.users.includes(me) && !S.payments.paid[`${d.id}:${due}:${me}`]) t.money++;
+  t.dates = S.events.filter(e => e.date >= S.today && daysBetween(S.today, e.date) <= 3).length;
+  return t;
+}
+
+function render() {
+  if (!S) return;
+  const t = todo();
+  const views = { home: vHome, clean: vClean, shop: vShop, dates: vDates, money: vMoney, me: vMe };
+  const titles = { home: 'Richmond Rd', clean: 'Cleaning', shop: 'Shopping list', dates: 'Notices', money: 'Payments', me: nameOf(S.me) };
+  $('#app').innerHTML = `
+  <header class="top"><div class="wrap"><div><h1>${esc(titles[TAB])}</h1><div class="who">${TAB === 'home' ? 'Hi ' + esc(nameOf(S.me)) + ', ' + fmt(S.today) : ''}</div></div>
+    <button class="btn alt sm" data-a="refresh" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.5)">Refresh</button></div></header>
+  <main class="wrap">${views[TAB]()}</main>
+  <nav class="tabs"><div class="wrap">${TABS.map(([id, label]) => `
+    <button data-tab="${id}" class="${TAB === id ? 'on' : ''}" aria-label="${label}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[id]}</svg>
+      ${label}${t[id] ? '<span class="dot"></span>' : ''}</button>`).join('')}</div></nav>`;
+}
+
+// ---------------- Home ----------------
+function vHome() {
+  const ws = weekStartOf(S.today);
+  const house = S.rosters.house, bath = S.rosters.bathroom;
+  const hw = assignee(house, ws), bw = assignee(bath, ws);
+  const status = (r) => { const c = cleanRec(r.id, ws); return c ? c.status : 'draft'; };
+  const chip = st => ({ draft: '<span class="chip y">To do</span>', rejected: '<span class="chip r">Needs fixing</span>', submitted: '<span class="chip">Waiting for approval</span>', approved: '<span class="chip g">Approved</span>' }[st]);
+  const me = S.me;
+  const waiting = [];
+  for (const c of S.cleanings) if (c.status === 'submitted' && c.user !== me && !c.approvals?.[me])
+    waiting.push(`<li><div class="grow"><b>Review ${esc(nameOf(c.user))}'s ${esc(S.rosters[c.rosterId]?.name.toLowerCase())}</b><div class="small muted">Week of ${fmt(c.weekStart)}</div></div><button class="btn sm" data-a="open-review" data-r="${c.rosterId}" data-w="${c.weekStart}">Review</button></li>`);
+  for (const s of S.swaps.filter(s => s.to === me))
+    waiting.push(`<li><div class="grow"><b>${esc(nameOf(s.from))} wants to swap</b><div class="small muted">Their ${fmt(s.myWeek)} for your ${fmt(s.theirWeek)}</div></div><button class="btn sm ok" data-a="swap-yes" data-id="${s.id}">Accept</button><button class="btn sm alt" data-a="swap-no" data-id="${s.id}">No</button></li>`);
+  for (const d of S.payments.defs) for (const due of occurrences(d, addDays(S.today, -30), addDays(S.today, 7)))
+    if (d.users.includes(me) && !S.payments.paid[`${d.id}:${due}:${me}`])
+      waiting.push(`<li><div class="grow"><b>${esc(d.title)}: ${money(d.amount)}</b><div class="small ${due < S.today ? '' : 'muted'}" ${due < S.today ? 'style="color:var(--red)"' : ''}>${due < S.today ? 'Overdue since' : 'Due'} ${fmt(due)}</div></div><button class="btn sm" data-a="pay" data-id="${d.id}" data-d="${due}">Mark paid</button></li>`);
+
+  const next = S.events.filter(e => e.date >= S.today).slice(0, 3);
+  const pinned = S.notices.filter(n => n.pinned).slice(0, 2);
+  const binsWho = hw ? nameOf(hw) : '—';
+  const wd = dowOf(S.today);
+  const binLine = wd === 1 ? 'Bins go out tonight.' : wd === 2 ? 'Bins come back in today.' : 'Bins out Monday night, back in Tuesday.';
+
+  return `
+  <section class="hero" aria-label="This week">
+    <div class="lid"></div>
+    <div class="in">
+      <div class="row between"><span class="muted small">House clean, week of ${fmt(ws)}</span>${house ? chip(status(house)) : ''}</div>
+      <div class="name">${esc(hw ? nameOf(hw) : 'Not set up')}</div>
+      <div class="small muted">Sunday to Wednesday. ${esc(binLine)} ${esc(binsWho)} is on bins.</div>
+      ${house ? `<div class="strip">${house.members.map((_, i) => { const w = addDays(ws, i * 7); const a = assignee(house, w); return `<span class="${i === 0 ? 'on' : ''}">${esc(nameOf(a))}<br><small style="font-size:11px">${i === 0 ? 'now' : fmt(w).slice(4)}</small></span>`; }).join('')}</div>` : ''}
+      ${hw === me && !['submitted', 'approved'].includes(status(house)) ? `<p style="margin:14px 0 0"><button class="btn block" data-a="open-clean" data-r="house" data-w="${ws}">Start your clean</button></p>` : ''}
+    </div>
+  </section>
+  ${bath ? `<div class="card row between"><div><div class="small muted">Shared bathroom</div><h3>${esc(bw ? nameOf(bw) : '—')}</h3></div>
+    <div class="row">${chip(status(bath))}${bw === me && !['submitted', 'approved'].includes(status(bath)) ? `<button class="btn sm" data-a="open-clean" data-r="bathroom" data-w="${ws}">Start</button>` : ''}</div></div>` : ''}
+  ${waiting.length ? `<h2>Waiting for you</h2><div class="card"><ul class="list">${waiting.join('')}</ul></div>` : ''}
+  ${pinned.map(n => `<div class="tipbox"><b>${esc(n.title)}</b>${n.body ? '<br>' + esc(n.body) : ''}</div>`).join('')}
+  <h2>Coming up</h2>
+  <div class="card">${next.length ? `<ul class="list">${next.map(evLi).join('')}</ul>` : '<p class="muted" style="margin:0">No dates coming up. Add inspections and other dates in Notices.</p>'}</div>
+  <h2>Latest</h2>
+  <div class="card">${S.feed.length ? `<ul class="list feed">${S.feed.slice(0, 8).map(f => `<li><div class="grow"><div class="t">${esc(f.title)}</div><div class="small">${esc(f.body)}</div><div class="small muted">${ago(f.at)}</div></div></li>`).join('')}</ul>` : '<p class="muted" style="margin:0">Nothing yet.</p>'}</div>`;
+}
+function evLi(e) {
+  const d = daysBetween(S.today, e.date);
+  const when = d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : d < 0 ? fmt(e.date) : `${fmt(e.date)}, in ${d} days`;
+  return `<li><div class="grow"><div>${e.kind === 'inspection' ? '<span class="chip y">Inspection</span> ' : ''}<b>${esc(e.title)}</b></div>
+    <div class="small muted">${when}${e.time ? ' at ' + esc(e.time) : ''}</div>${e.note ? `<div class="small">${esc(e.note)}</div>` : ''}</div>
+    ${e.by === S.me || isAdmin() ? `<button class="link small" data-a="ev-del" data-id="${e.id}">Remove</button>` : ''}</li>`;
+}
+
+// ---------------- Cleaning ----------------
+function vClean() {
+  if (VIEW?.kind === 'area') return vArea();
+  if (VIEW?.kind === 'job') return vJob();
+  if (VIEW?.kind === 'review') return vReview();
+  const ws = weekStartOf(S.today), me = S.me;
+  const mine = Object.values(S.rosters).filter(r => assignee(r, ws) === me);
+  const reviews = S.cleanings.filter(c => c.status === 'submitted' && c.user !== me);
+  const rota = r => {
+    const weeks = Array.from({ length: 8 }, (_, i) => addDays(ws, i * 7));
+    return `<div class="card"><h3>${esc(r.name)}</h3><ul class="list">${weeks.map(w => {
+      const a = assignee(r, w), c = cleanRec(r.id, w);
+      return `<li><div class="grow"><b>${fmt(w)}</b> <span class="muted">to ${fmt(addDays(w, 3)).slice(4)}</span><div class="small">${esc(nameOf(a))}${a === me ? ' (you)' : ''}</div></div>
+      ${c ? `<span class="chip ${c.status === 'approved' ? 'g' : c.status === 'rejected' ? 'r' : ''}">${c.status}</span>` : ''}
+      ${a === me && w > ws ? `<button class="btn sm alt" data-a="swap" data-r="${r.id}" data-w="${w}">Swap</button>` : ''}</li>`;
+    }).join('')}</ul></div>`;
+  };
+  const hist = S.cleanings.filter(c => c.weekStart < ws).slice(0, 10);
+  return `
+  <div class="warnbox"><b>Safety.</b> ${esc(SAFETY)}</div>
+  ${mine.length ? mine.map(r => {
+    const c = cleanRec(r.id, ws);
+    const st = c?.status || 'draft';
+    return `<div class="card"><div class="row between"><h3>Your ${esc(r.name.toLowerCase())}</h3><span class="chip ${st === 'approved' ? 'g' : st === 'rejected' ? 'r' : 'y'}">${st === 'draft' ? 'To do' : st}</span></div>
+      <p class="small muted">Week of ${fmt(ws)}. Due by Wednesday night.</p>
+      ${st === 'rejected' ? `<div class="warnbox small"><b>${esc(nameOf(c.rejection.by))}:</b> ${esc(c.rejection.reason)}</div>` : ''}
+      <button class="btn block" data-a="open-clean" data-r="${r.id}" data-w="${ws}">${st === 'draft' || st === 'rejected' ? 'Open checklist' : 'View'}</button></div>`;
+  }).join('') : `<div class="card"><p style="margin:0">You are not on cleaning this week.</p></div>`}
+  ${reviews.length ? `<h2>To review</h2>${reviews.map(c => `<div class="card row between"><div><b>${esc(nameOf(c.user))}</b> <span class="muted">${esc(S.rosters[c.rosterId]?.name)}</span>
+    <div class="small muted">${Object.keys(c.approvals || {}).length} of ${S.requiredApprovals} approvals${c.approvals?.[me] ? ', including yours' : ''}</div></div>
+    <button class="btn sm" data-a="open-review" data-r="${c.rosterId}" data-w="${c.weekStart}">${c.approvals?.[me] ? 'View' : 'Review'}</button></div>`).join('')}` : ''}
+  <h2>Roster</h2>
+  ${Object.values(S.rosters).map(rota).join('')}
+  ${hist.length ? `<h2>Past weeks</h2><div class="card"><ul class="list">${hist.map(c => `<li><div class="grow"><b>${esc(nameOf(c.user))}</b> <span class="muted small">${esc(S.rosters[c.rosterId]?.name)}, ${fmt(c.weekStart)}</span></div>
+    <span class="chip ${c.status === 'approved' ? 'g' : c.status === 'rejected' ? 'r' : ''}">${c.status}</span><button class="link small" data-a="open-review" data-r="${c.rosterId}" data-w="${c.weekStart}">Photos</button></li>`).join('')}</ul></div>` : ''}`;
+}
+
+function vJob() {
+  const { r: rid, w: ws } = VIEW;
+  const r = S.rosters[rid], c = cleanRec(rid, ws) || { areas: {}, status: 'draft' };
+  const ids = areasFor(rid, ws);
+  const editable = assignee(r, ws) === S.me && ['draft', 'rejected'].includes(c.status);
+  const need = ids.filter(id => AREAS[id].photo);
+  const ready = need.every(id => c.areas[id]?.photos?.length);
+  return `
+  <p><button class="link" data-a="back">Back</button></p>
+  <h2 style="margin-top:0">${esc(r.name)}, week of ${fmt(ws)}</h2>
+  <p class="muted small">Work top to bottom, dry to wet. Each area needs at least one photo of the finished result.</p>
+  ${ids.map((id, i) => {
+    const a = AREAS[id], d = c.areas[id] || {};
+    const ok = (!a.photo || d.photos?.length) && (d.checked?.length || 0) >= a.steps.length;
+    return `<button class="area ${ok ? 'ok' : ''}" data-a="open-area" data-id="${id}"><span class="n">${ok ? '' : i + 1}</span>
+      <span class="grow"><b>${esc(a.name)}</b><br><span class="small muted">${d.checked?.length || 0} of ${a.steps.length} steps${a.photo ? `, ${d.photos?.length || 0} photo${d.photos?.length === 1 ? '' : 's'}` : ''}</span></span></button>`;
+  }).join('')}
+  ${editable ? `<p><button class="btn block ok" data-a="submit" ${ready ? '' : 'disabled'}>Submit for approval</button></p>
+    ${ready ? '' : '<p class="small muted">Add at least one photo to every area to submit.</p>'}` :
+    `<div class="card small">Status: <b>${esc(c.status)}</b></div>`}`;
+}
+
+function vArea() {
+  const { r: rid, w: ws, id } = VIEW;
+  const a = AREAS[id], c = cleanRec(rid, ws) || { areas: {}, status: 'draft' };
+  const d = c.areas[id] || { checked: [], photos: [], note: '' };
+  const editable = assignee(S.rosters[rid], ws) === S.me && ['draft', 'rejected'].includes(c.status);
+  return `
+  <p><button class="link" data-a="back-job">Back to the checklist</button></p>
+  <h2 style="margin-top:0">${esc(a.name)}</h2>
+  ${a.never ? `<div class="warnbox">${esc(a.never)}</div>` : ''}
+  <div class="card"><ul class="list">${a.steps.map((s, i) => {
+    const on = d.checked?.includes(i);
+    return `<li><button class="check ${on ? 'on' : ''}" ${editable ? `data-a="step" data-i="${i}"` : 'disabled'} aria-label="Step ${i + 1} done"></button><div class="grow ${on ? 'done-text' : ''}">${esc(s)}</div></li>`;
+  }).join('')}</ul></div>
+  ${a.photo ? `<h3>Photos</h3><div class="photos">${(d.photos || []).map(p => `<div class="ph"><img src="${photoUrl(p)}" alt="Photo of ${esc(a.name)}" data-a="zoom" data-p="${p}" loading="lazy">${editable ? `<button class="x" data-a="ph-del" data-p="${p}" aria-label="Remove photo">×</button>` : ''}</div>`).join('')}
+    ${editable && (d.photos?.length || 0) < 8 ? `<label class="addph">Add photo<input type="file" accept="image/*" capture="environment" multiple data-a="ph-add"></label>` : ''}</div>` : ''}
+  <label class="f">Note (optional)</label>
+  <textarea id="note" ${editable ? '' : 'disabled'} placeholder="Anything the others should know, such as something broken or running out">${esc(d.note || '')}</textarea>
+  ${editable ? `<p><button class="btn block" data-a="save-note">Save and go back</button></p>` : ''}`;
+}
+
+function vReview() {
+  const { r: rid, w: ws } = VIEW;
+  const c = cleanRec(rid, ws);
+  if (!c) return `<p><button class="link" data-a="back">Back</button></p><div class="card">No photos for that week.</div>`;
+  const canReview = c.status === 'submitted' && c.user !== S.me && !c.approvals?.[S.me];
+  return `
+  <p><button class="link" data-a="back">Back</button></p>
+  <h2 style="margin-top:0">${esc(nameOf(c.user))}: ${esc(S.rosters[rid]?.name)}</h2>
+  <p class="small muted">Week of ${fmt(ws)}. Status: ${esc(c.status)}. Approved by: ${Object.keys(c.approvals || {}).map(nameOf).join(', ') || 'nobody yet'}.</p>
+  ${areasFor(rid, ws).map(id => { const a = AREAS[id], d = c.areas[id] || {}; return `<div class="card"><div class="row between"><h3>${esc(a.name)}</h3><span class="small muted">${d.checked?.length || 0}/${a.steps.length} steps</span></div>
+    ${d.photos?.length ? `<div class="photos">${d.photos.map(p => `<div class="ph"><img src="${photoUrl(p)}" alt="" data-a="zoom" data-p="${p}" loading="lazy"></div>`).join('')}</div>` : (a.photo ? '<p class="small muted">No photos.</p>' : '')}
+    ${d.note ? `<p class="small"><b>Note:</b> ${esc(d.note)}</p>` : ''}</div>`; }).join('')}
+  ${canReview ? `<div class="card"><button class="btn block ok" data-a="approve">Approve</button>
+    <label class="f">Or say what needs fixing</label><textarea id="reason" placeholder="For example: the cooktop trivets were not cleaned"></textarea>
+    <p><button class="btn block warn" data-a="reject">Send back to fix</button></p></div>` : ''}`;
+}
+
+async function compress(file) {
+  const bmp = await createImageBitmap(file);
+  const scale = Math.min(1, 1400 / Math.max(bmp.width, bmp.height));
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(bmp.width * scale); cv.height = Math.round(bmp.height * scale);
+  cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+  return cv.toDataURL('image/jpeg', 0.72);
+}
+async function addPhotos(files) {
+  const { r, w, id } = VIEW;
+  const c = cleanRec(r, w), cur = c?.areas[id]?.photos || [];
+  const ids = [...cur];
+  toast('Uploading...');
+  for (const f of [...files].slice(0, 8 - ids.length)) {
+    try { const { id: pid } = await api('photo', { data: await compress(f) }); ids.push(pid); }
+    catch (e) { toast(e.message); }
+  }
+  await act('clean.save', { rosterId: r, weekStart: w, areaId: id, photos: ids }, 'Photos saved.');
+}
+
+// ---------------- Shopping ----------------
+function vShop() {
+  const open = S.shopping.filter(i => !i.bought), done = S.shopping.filter(i => i.bought);
+  return `
+  <div class="card">
+    <label class="f" for="item" style="margin-top:0">What do we need?</label>
+    <div class="row"><input type="text" id="item" placeholder="Toilet paper" style="flex:3"><input type="text" id="qty" placeholder="Qty" style="flex:1"></div>
+    <p style="margin-bottom:0"><button class="btn block" data-a="shop-add">Add to list</button></p>
+  </div>
+  <div class="card">${open.length ? `<ul class="list">${open.map(i => `<li><button class="check" data-a="shop-tog" data-id="${i.id}" aria-label="Mark bought"></button>
+    <div class="grow"><b>${esc(i.name)}</b>${i.qty ? ` <span class="muted">× ${esc(i.qty)}</span>` : ''}<div class="small muted">Added by ${esc(nameOf(i.by))}, ${ago(i.at)}</div></div>
+    <button class="link small" data-a="shop-del" data-id="${i.id}">Remove</button></li>`).join('')}</ul>` : '<p class="muted" style="margin:0">The list is empty.</p>'}</div>
+  ${done.length ? `<div class="row between"><h2>Bought</h2><button class="link" data-a="shop-clear">Clear bought</button></div>
+  <div class="card"><ul class="list">${done.map(i => `<li><button class="check on" data-a="shop-tog" data-id="${i.id}" aria-label="Mark not bought"></button>
+    <div class="grow"><span class="done-text">${esc(i.name)}</span><div class="small muted">Bought by ${esc(nameOf(i.bought.by))}, ${ago(i.bought.at)}</div></div></li>`).join('')}</ul></div>` : ''}
+  <p class="small muted">Anything you buy with your own money for the house is yours (Agreement, clause 4.1).</p>`;
+}
+
+// ---------------- Notices and dates ----------------
+function vDates() {
+  const up = S.events.filter(e => e.date >= S.today), past = S.events.filter(e => e.date < S.today).reverse();
+  return `
+  <h2 style="margin-top:18px">Dates</h2>
+  <div class="card">${up.length ? `<ul class="list">${up.map(evLi).join('')}</ul>` : '<p class="muted" style="margin:0">No dates coming up.</p>'}</div>
+  <details class="card"><summary><b>Add a date</b></summary>
+    <label class="f">Type</label><select id="ekind"><option value="inspection">Inspection</option><option value="other">Other</option></select>
+    <label class="f">Title</label><input type="text" id="etitle" placeholder="Routine inspection">
+    <div class="row"><div style="flex:1"><label class="f">Date</label><input type="date" id="edate"></div><div style="flex:1"><label class="f">Time</label><input type="time" id="etime"></div></div>
+    <label class="f">Note</label><input type="text" id="enote" placeholder="Entry notice received from the agent">
+    <p style="margin-bottom:0"><button class="btn block" data-a="ev-add">Add date and notify everyone</button></p>
+    <p class="small muted">Everyone is reminded 3 days before, the day before and on the day.</p>
+  </details>
+  <h2>Notices</h2>
+  <details class="card"><summary><b>Post a notice</b></summary>
+    <label class="f">Title</label><input type="text" id="ntitle">
+    <label class="f">Message</label><textarea id="nbody"></textarea>
+    ${isAdmin() ? '<label class="row small" style="margin-top:10px"><input type="checkbox" id="npin"> Pin to the home screen</label>' : ''}
+    <p style="margin-bottom:0"><button class="btn block" data-a="n-add">Post and notify everyone</button></p>
+  </details>
+  ${S.notices.map(n => `<div class="card">${n.pinned ? '<span class="chip y">Pinned</span> ' : ''}<b>${esc(n.title)}</b>
+    ${n.body ? `<p style="white-space:pre-wrap;margin:8px 0">${esc(n.body)}</p>` : ''}
+    <div class="row between small muted"><span>${esc(nameOf(n.by))}, ${ago(n.at)}</span>${n.by === S.me || isAdmin() ? `<button class="link small" data-a="n-del" data-id="${n.id}">Remove</button>` : ''}</div></div>`).join('') || '<div class="card muted">No notices yet.</div>'}
+  ${past.length ? `<h2>Past dates</h2><div class="card"><ul class="list">${past.slice(0, 10).map(evLi).join('')}</ul></div>` : ''}`;
+}
+
+// ---------------- Payments ----------------
+function vMoney() {
+  const me = S.me, P = S.payments;
+  const mineRows = [];
+  for (const d of P.defs.filter(d => d.users.includes(me)))
+    for (const due of occurrences(d, addDays(S.today, -30), addDays(S.today, 42))) {
+      const rec = P.paid[`${d.id}:${due}:${me}`];
+      mineRows.push({ d, due, rec });
+    }
+  mineRows.sort((a, b) => a.due.localeCompare(b.due));
+  const mine = `<div class="card">${mineRows.length ? `<ul class="list">${mineRows.map(({ d, due, rec }) => `<li><div class="grow"><b>${esc(d.title)}</b> <span class="muted">${money(d.amount)}</span>
+    <div class="small ${!rec && due < S.today ? '' : 'muted'}" ${!rec && due < S.today ? 'style="color:var(--red)"' : ''}>${!rec && due < S.today ? 'Overdue, was due' : 'Due'} ${fmt(due)}${d.payTo ? ', to ' + esc(d.payTo) : ''}</div></div>
+    ${rec ? `<span class="chip ${rec.confirmed ? 'g' : ''}">${rec.confirmed ? 'Confirmed' : 'Paid'}</span>${rec.confirmed ? '' : `<button class="link small" data-a="unpay" data-id="${d.id}" data-d="${due}">Undo</button>`}` : `<button class="btn sm" data-a="pay" data-id="${d.id}" data-d="${due}">Mark paid</button>`}</li>`).join('')}</ul>` : '<p class="muted" style="margin:0">Nothing due in the next six weeks.</p>'}</div>`;
+  if (!isAdmin()) return `<h2 style="margin-top:18px">Your payments</h2>${mine}<p class="small muted">Rent is paid fortnightly in advance (Agreement, clause 2.3). Mark it paid when you transfer, and Bernard confirms.</p>`;
+
+  const everyL = { 0: 'One-off', 7: 'Weekly', 14: 'Fortnightly', 28: 'Every 4 weeks', 30: 'Monthly (30 days)', 91: 'Quarterly' };
+  const grid = P.defs.map(d => {
+    const dues = occurrences(d, addDays(S.today, -28), addDays(S.today, 14));
+    if (!dues.length) return '';
+    return `<div class="card"><div class="row between"><h3>${esc(d.title)}</h3><span class="small muted">${money(d.amount)}, ${everyL[d.everyDays] || ''}</span></div>
+      <div class="scroll"><table class="grid"><tr><th>Due</th>${d.users.map(u => `<th>${esc(nameOf(u))}</th>`).join('')}</tr>
+      ${dues.map(due => `<tr><td>${fmt(due)}</td>${d.users.map(u => { const r = P.paid[`${d.id}:${due}:${u}`];
+        return `<td>${r ? (r.confirmed ? '<span class="chip g">OK</span>' : `<button class="btn sm ok" data-a="confirm" data-id="${d.id}" data-d="${due}" data-u="${u}">Confirm</button>`) : (due <= S.today ? `<button class="link small" data-a="confirm" data-id="${d.id}" data-d="${due}" data-u="${u}">Mark</button>` : '<span class="muted">—</span>')}</td>`; }).join('')}</tr>`).join('')}</table></div>
+      <p class="small" style="margin-bottom:0"><button class="link small" data-a="pay-edit" data-id="${d.id}">Edit</button> <button class="link small" data-a="pay-del" data-id="${d.id}">Delete</button></p></div>`;
+  }).join('');
+  const e = VIEW?.kind === 'payedit' ? P.defs.find(d => d.id === VIEW.id) || {} : {};
+  return `
+  <h2 style="margin-top:18px">Your payments</h2>${mine}
+  <h2>Everyone</h2>${grid || '<div class="card muted">No payments set up yet.</div>'}
+  <details class="card" ${VIEW?.kind === 'payedit' ? 'open' : ''}><summary><b>${e.id ? 'Edit payment' : 'Set up a payment'}</b></summary>
+    <label class="f">Title</label><input type="text" id="ptitle" value="${esc(e.title || '')}" placeholder="Rent">
+    <div class="row"><div style="flex:1"><label class="f">Amount each ($)</label><input type="number" id="pamount" step="0.01" value="${e.amount ?? ''}" placeholder="550"></div>
+    <div style="flex:1"><label class="f">First due date</label><input type="date" id="pfirst" value="${e.firstDue || ''}"></div></div>
+    <label class="f">Repeats</label><select id="pevery">${Object.entries(everyL).map(([k, v]) => `<option value="${k}" ${String(e.everyDays ?? 14) === k ? 'selected' : ''}>${v}</option>`).join('')}</select>
+    <label class="f">Pay to</label><input type="text" id="pto" value="${esc(e.payTo || '')}" placeholder="Bernard">
+    <label class="f">Who pays</label>
+    <div class="row wrapflex">${S.users.map(u => `<label class="row small"><input type="checkbox" class="puser" value="${u.id}" ${(e.users || ['steeven', 'kevin', 'renan']).includes(u.id) ? 'checked' : ''}> ${esc(u.name)}</label>`).join('')}</div>
+    <p style="margin-bottom:0"><button class="btn block" data-a="pay-save" data-id="${e.id || ''}">${e.id ? 'Save changes' : 'Add payment'}</button></p>
+    <p class="small muted">Each person is reminded the day before and on the day. If it is still not marked paid 2 days later, you and they are both told.</p>
+  </details>`;
+}
+
+// ---------------- Me ----------------
+function vMe() {
+  const topic = S.myTopic, server = S.ntfyServer.replace(/\/$/, '');
+  const host = server.replace(/^https?:\/\//, '');
+  const admin = isAdmin() ? vAdmin() : '';
+  return `
+  <h2 style="margin-top:18px">Notifications on your phone</h2>
+  <div class="card">
+    ${topic ? `<ol style="padding-left:20px;margin:0">
+      <li>Install the free <b>ntfy</b> app (App Store or Google Play).</li>
+      <li>Tap below to subscribe to your private channel. Or in ntfy, tap +, and enter this topic:<br><code style="word-break:break-all">${esc(topic)}</code></li>
+      <li>Send a test notification.</li></ol>
+      <p class="row wrapflex"><a class="btn" href="ntfy://${esc(host)}/${esc(topic)}">Open in ntfy</a>
+      <button class="btn alt" data-a="copy-topic">Copy topic</button>
+      <button class="btn alt" data-a="test">Send a test</button></p>
+      <p class="small muted" style="margin:0">Keep your topic private: anyone with it can read your house notifications. Everything also appears under Latest on the home screen.</p>`
+    : `<button class="btn" data-a="notif-on">Turn on notifications</button>`}
+  </div>
+  <h2>Change your PIN</h2>
+  <div class="card"><label class="f" style="margin-top:0">Current PIN</label><input type="password" inputmode="numeric" id="pold" class="pin">
+    <label class="f">New PIN</label><input type="password" inputmode="numeric" id="pnew" class="pin" maxlength="8">
+    <p style="margin-bottom:0"><button class="btn block" data-a="pin">Change PIN</button></p></div>
+  <h2>All notifications</h2>
+  <div class="card">${S.feed.length ? `<ul class="list feed">${S.feed.map(f => `<li><div class="grow"><div class="t">${esc(f.title)}</div><div class="small">${esc(f.body)}</div><div class="small muted">${ago(f.at)}</div></div></li>`).join('')}</ul>` : '<p class="muted" style="margin:0">Nothing yet.</p>'}</div>
+  ${admin}
+  <p><button class="btn alt block" data-a="signout">Sign out</button></p>`;
+}
+function vAdmin() {
+  const rosterForm = r => `<div class="card"><h3>${esc(r.name)}</h3>
+    <p class="small muted">The order repeats every ${r.members.length} weeks. The first person is on the week of the start date.</p>
+    ${r.members.map((m, i) => `<label class="f">Week ${i + 1}</label><select data-rm="${r.id}">${S.users.map(u => `<option value="${u.id}" ${u.id === m ? 'selected' : ''}>${esc(u.name)}</option>`).join('')}</select>`).join('')}
+    <div class="row"><div style="flex:1"><label class="f">Start week (any day, rounds to Sunday)</label><input type="date" id="rs-${r.id}" value="${r.startDate}"></div>
+    <div style="flex:1"><label class="f">Daily reminder time</label><select id="rh-${r.id}">${Array.from({ length: 16 }, (_, i) => i + 6).map(h => `<option value="${h}" ${h === r.reminderHour ? 'selected' : ''}>${h > 12 ? h - 12 + 'pm' : h === 12 ? '12pm' : h + 'am'}</option>`).join('')}</select></div></div>
+    <label class="row small" style="margin-top:10px"><input type="checkbox" id="ro-${r.id}"> Clear swaps already agreed</label>
+    <p style="margin-bottom:0"><button class="btn block" data-a="roster-save" data-r="${r.id}">Save ${esc(r.name.toLowerCase())} roster</button></p></div>`;
+  return `
+  <h2>House setup (Bernard)</h2>
+  ${Object.values(S.rosters).map(rosterForm).join('')}
+  <div class="card"><h3>Reset someone's PIN</h3>
+    <label class="f">Person</label><select id="apu">${S.users.map(u => `<option value="${u.id}">${esc(u.name)}</option>`).join('')}</select>
+    <label class="f">New PIN</label><input type="password" inputmode="numeric" id="apn" class="pin" maxlength="8">
+    <p style="margin-bottom:0"><button class="btn block" data-a="admin-pin">Reset PIN</button></p></div>`;
+}
+
+// ------------------------------------------------------------------
+// Events
+// ------------------------------------------------------------------
+function modal(html, onReady) {
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="sheet">${html}</div>`;
+  m.onclick = e => { if (e.target === m) m.remove(); };
+  document.body.appendChild(m); onReady?.(m); return m;
+}
+const val = id => document.getElementById(id)?.value?.trim() ?? '';
+
+document.addEventListener('click', async e => {
+  const tab = e.target.closest('[data-tab]');
+  if (tab) { TAB = tab.dataset.tab; VIEW = null; render(); window.scrollTo(0, 0); return; }
+  const el = e.target.closest('[data-a]');
+  if (!el || el.tagName === 'INPUT' || !S) return;
+  const a = el.dataset.a, D = el.dataset;
+  const go = (tabName, view) => { TAB = tabName; VIEW = view; render(); window.scrollTo(0, 0); };
+  switch (a) {
+    case 'refresh': await refresh(); toast('Up to date.'); break;
+    case 'signout': signOut(); break;
+    case 'open-clean': go('clean', { kind: 'job', r: D.r, w: D.w }); break;
+    case 'open-review': go('clean', { kind: 'review', r: D.r, w: D.w }); break;
+    case 'open-area': go('clean', { ...VIEW, kind: 'area', id: D.id }); break;
+    case 'back': go(TAB, null); break;
+    case 'back-job': go('clean', { kind: 'job', r: VIEW.r, w: VIEW.w }); break;
+    case 'step': {
+      const c = cleanRec(VIEW.r, VIEW.w), cur = new Set(c?.areas[VIEW.id]?.checked || []);
+      const i = +D.i; cur.has(i) ? cur.delete(i) : cur.add(i);
+      el.classList.toggle('on'); el.nextElementSibling.classList.toggle('done-text');
+      await act('clean.save', { rosterId: VIEW.r, weekStart: VIEW.w, areaId: VIEW.id, checked: [...cur] });
+      break;
+    }
+    case 'ph-del': {
+      const c = cleanRec(VIEW.r, VIEW.w);
+      await act('clean.save', { rosterId: VIEW.r, weekStart: VIEW.w, areaId: VIEW.id, photos: (c.areas[VIEW.id].photos || []).filter(p => p !== D.p) }, 'Photo removed.');
+      break;
+    }
+    case 'save-note':
+      await act('clean.save', { rosterId: VIEW.r, weekStart: VIEW.w, areaId: VIEW.id, note: val('note') }, 'Saved.');
+      go('clean', { kind: 'job', r: VIEW.r, w: VIEW.w }); break;
+    case 'submit': {
+      const req = areasFor(VIEW.r, VIEW.w).filter(id => AREAS[id].photo);
+      await act('clean.submit', { rosterId: VIEW.r, weekStart: VIEW.w, requiredAreas: req }, 'Submitted. The others have been asked to approve.');
+      break;
+    }
+    case 'approve': await act('clean.review', { rosterId: VIEW.r, weekStart: VIEW.w, approve: true }, 'Approved.'); break;
+    case 'reject': {
+      const reason = val('reason'); if (!reason) { toast('Say what needs fixing.'); break; }
+      await act('clean.review', { rosterId: VIEW.r, weekStart: VIEW.w, approve: false, reason }, 'Sent back with your note.'); break;
+    }
+    case 'zoom': { const lb = document.createElement('div'); lb.className = 'lightbox'; lb.innerHTML = `<img src="${photoUrl(D.p)}" alt="">`; lb.onclick = () => lb.remove(); document.body.appendChild(lb); break; }
+    case 'swap': {
+      const r = S.rosters[D.r], ws = weekStartOf(S.today);
+      const opts = Array.from({ length: 12 }, (_, i) => addDays(ws, (i + 1) * 7)).filter(w => { const x = assignee(r, w); return x && x !== S.me; });
+      modal(`<h3>Swap your week of ${fmt(D.w)}</h3><p class="small muted">Pick the week you want instead. That person has to accept.</p>
+        <select id="swapw">${opts.map(w => `<option value="${w}">${fmt(w)}: ${esc(nameOf(assignee(r, w)))}</option>`).join('')}</select>
+        <p><button class="btn block" id="swapgo">Send swap request</button></p>`, m => {
+        m.querySelector('#swapgo').onclick = async () => { const tw = m.querySelector('#swapw').value; m.remove(); await act('swap.request', { rosterId: D.r, myWeek: D.w, theirWeek: tw }, 'Swap request sent.'); };
+      });
+      break;
+    }
+    case 'swap-yes': await act('swap.answer', { id: D.id, accept: true }, 'Swap accepted.'); break;
+    case 'swap-no': await act('swap.answer', { id: D.id, accept: false }, 'Swap declined.'); break;
+    case 'shop-add': {
+      const name = val('item'); if (!name) { toast('Type what we need.'); break; }
+      await act('shop.add', { name, qty: val('qty') }, 'Added.'); $('#item')?.focus(); break;
+    }
+    case 'shop-tog': await act('shop.toggle', { id: D.id }); break;
+    case 'shop-del': await act('shop.remove', { id: D.id }); break;
+    case 'shop-clear': await act('shop.clear', {}, 'Cleared.'); break;
+    case 'ev-add': await act('event.add', { kind: val('ekind'), title: val('etitle'), date: val('edate'), time: val('etime'), note: val('enote') }, 'Date added. Everyone has been told.'); break;
+    case 'ev-del': if (confirm('Remove this date?')) await act('event.remove', { id: D.id }, 'Removed.'); break;
+    case 'n-add': await act('notice.add', { title: val('ntitle'), body: val('nbody'), pinned: !!document.getElementById('npin')?.checked }, 'Posted.'); break;
+    case 'n-del': if (confirm('Remove this notice?')) await act('notice.remove', { id: D.id }, 'Removed.'); break;
+    case 'pay': await act('pay.mark', { defId: D.id, date: D.d }, 'Marked as paid.'); break;
+    case 'unpay': await act('pay.mark', { defId: D.id, date: D.d, undo: true }, 'Undone.'); break;
+    case 'confirm': await act('pay.mark', { defId: D.id, date: D.d, user: D.u }, 'Confirmed.'); break;
+    case 'pay-edit': VIEW = { kind: 'payedit', id: D.id }; render(); break;
+    case 'pay-del': if (confirm('Delete this payment and stop its reminders?')) await act('pay.remove', { id: D.id }, 'Deleted.'); break;
+    case 'pay-save': {
+      const users = [...document.querySelectorAll('.puser:checked')].map(i => i.value);
+      await act('pay.def', { id: D.id || undefined, title: val('ptitle'), amount: val('pamount'), firstDue: val('pfirst'), everyDays: +val('pevery'), payTo: val('pto'), users }, 'Payment saved.');
+      VIEW = null; render(); break;
+    }
+    case 'notif-on': await act('notify.enable', {}, 'Notifications turned on.'); break;
+    case 'test': await act('notify.test', {}, 'Test sent.'); break;
+    case 'copy-topic': try { await navigator.clipboard.writeText(S.myTopic); toast('Copied.'); } catch { toast(S.myTopic); } break;
+    case 'pin': await act('pin.change', { old: val('pold'), pin: val('pnew') }, 'PIN changed.'); break;
+    case 'admin-pin': await act('admin.pin', { user: val('apu'), pin: val('apn') }, 'PIN reset.'); break;
+    case 'roster-save': {
+      const members = [...document.querySelectorAll(`[data-rm="${D.r}"]`)].map(s => s.value);
+      if (new Set(members).size !== members.length) { toast('Each person can only appear once.'); break; }
+      await act('roster.save', { id: D.r, members, startDate: val('rs-' + D.r), reminderHour: +val('rh-' + D.r), resetOverrides: document.getElementById('ro-' + D.r).checked }, 'Roster saved.');
+      break;
+    }
+  }
+});
+document.addEventListener('change', e => {
+  if (e.target.matches('[data-a="ph-add"]') && e.target.files.length) addPhotos(e.target.files);
+});
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S && !BUSY && VIEW?.kind !== 'area') refresh(); });
+
+boot();
+</script>
+</body>
+</html>
