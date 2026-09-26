@@ -182,6 +182,12 @@ const AREAS = {
     'Shake out the bath mat and toilet mat. Mop the floor last.'],
     never: 'Leave the door open and the fan on after showers so steam does not get trapped. Turn the fan off after about 15 minutes.' },
 };
+const PRODUCTS = [
+  'Long Life All Purpose Floor Cleaner', 'Long Life Grout Cleaner', 'CLR Multi-Purpose (bathroom & kitchen)',
+  'Harpic Bleach Power 10X', 'Harpic White & Shine 10X', 'Multi-use cleaning wipes (roll)', 'Kitchen microfibre cloths',
+  'Heavy duty sponge scourers', 'Sabco microfibre mop pads (refill)', 'Disposable gloves', 'Surf laundry powder',
+  'Fluffy fabric softener', 'Salt', 'Toilet paper', 'Paper towel', 'Aluminium foil', 'Cling wrap',
+];
 const HOUSE_AREAS = ['kitchen', 'living', 'floors', 'stairs', 'laundry', 'deck', 'glass', 'finish'];
 function areasFor(rosterId, weekStart) {
   if (rosterId === 'bathroom') return ['bathroom'];
@@ -534,7 +540,8 @@ function vShop() {
   return `
   <div class="card">
     <label class="f" for="item" style="margin-top:0">What do we need?</label>
-    <div class="row"><input type="text" id="item" placeholder="Toilet paper" style="flex:3"><input type="text" id="qty" placeholder="Qty" style="flex:1"></div>
+    <div class="row"><input type="text" id="item" list="products" autocomplete="off" placeholder="Start typing, or pick from the list" style="flex:3">
+    <datalist id="products">${PRODUCTS.map(x => `<option value="${esc(x)}">`).join('')}</datalist><input type="text" id="qty" placeholder="Qty" style="flex:1"></div>
     <p style="margin-bottom:0"><button class="btn block" data-a="shop-add">Add to list</button></p>
   </div>
   <div class="card">${open.length ? `<ul class="list">${open.map(i => `<li><button class="check" data-a="shop-tog" data-id="${i.id}" aria-label="Mark bought"></button>
@@ -543,7 +550,7 @@ function vShop() {
   ${done.length ? `<div class="row between"><h2>Bought</h2><button class="link" data-a="shop-clear">Clear bought</button></div>
   <div class="card"><ul class="list">${done.map(i => `<li><button class="check on" data-a="shop-tog" data-id="${i.id}" aria-label="Mark not bought"></button>
     <div class="grow"><span class="done-text">${esc(i.name)}</span><div class="small muted">Bought by ${esc(nameOf(i.bought.by))}, ${ago(i.bought.at)}</div></div></li>`).join('')}</ul></div>` : ''}
-  <p class="small muted">Anything you buy with your own money for the house is yours (Agreement, clause 4.1).</p>`;
+`;
 }
 
 // ---------------- Notices and dates ----------------
@@ -725,6 +732,7 @@ document.addEventListener('click', async e => {
     case 'swap-no': await act('swap.answer', { id: D.id, accept: false }, 'Swap declined.'); break;
     case 'shop-add': {
       const name = val('item'); if (!name) { toast('Type what we need.'); break; }
+      if (S.shopping.some(i => !i.bought && i.name.toLowerCase() === name.toLowerCase())) { toast(`${name} is already on the list.`); break; }
       await act('shop.add', { name, qty: val('qty') }, 'Added.'); $('#item')?.focus(); break;
     }
     case 'shop-tog': await act('shop.toggle', { id: D.id }); break;
