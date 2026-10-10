@@ -96,6 +96,26 @@ nav.tabs .dot{position:absolute;top:6px;left:56%;width:9px;height:9px;border-rad
 .photos .x{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:26px;height:26px}
 .addph{aspect-ratio:1;border:2px dashed var(--gum2);border-radius:10px;display:grid;place-items:center;color:var(--gum2);font-weight:600;font-size:14px;text-align:center;cursor:pointer}
 .addph input{display:none}
+button.addph{background:none;font:inherit;font-weight:600;font-size:14px;width:100%}
+.cam{position:fixed;inset:0;background:#000;z-index:70;display:flex;flex-direction:column;color:#fff}
+.cam-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;font-weight:600}
+.cam-top button{background:none;border:0;color:#fff;font:inherit;font-size:16px;padding:6px 0}
+.cam-view{flex:1;min-height:0;position:relative;display:grid;place-items:center}
+.cam-view video{width:100%;height:100%;object-fit:contain}
+.cam-view .msg{padding:24px;text-align:center;max-width:340px}
+.cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s}
+.cam-strip{display:flex;gap:8px;overflow-x:auto;padding:10px 14px;min-height:84px}
+.cam-strip .t{position:relative;flex:none;width:64px;height:64px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.6)}
+.cam-strip img{width:100%;height:100%;object-fit:cover;display:block}
+.cam-strip button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;font-size:14px;line-height:1;padding:0}
+.cam-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 18px calc(18px + env(safe-area-inset-bottom))}
+.cam-bar .n{font-size:14px;opacity:.8}
+.cam-shoot{width:74px;height:74px;border-radius:50%;border:5px solid #fff;background:rgba(255,255,255,.25);padding:0}
+.cam-shoot:active{background:#fff}
+.cam-shoot:disabled{opacity:.35}
+.cam-bar .btn{justify-self:end}
+.bins-ph{display:flex;gap:8px;margin-top:10px}
+.bins-ph img{width:64px;height:64px;object-fit:cover;border-radius:8px;display:block}
 .feed li .t{font-weight:600}
 .pin{letter-spacing:.4em;font-size:24px;text-align:center}
 .who-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -393,6 +413,15 @@ function vHome() {
   const binsWho = hw ? nameOf(hw) : '—';
   const wd = dowOf(S.today);
   const binLine = wd === 1 ? 'Bins go out tonight.' : wd === 2 ? 'Bins come back in today.' : 'Bins out Monday night, back in Tuesday.';
+  const binsDone = S.bins?.[S.today];
+  const binsCard = wd !== 1 || !house ? '' : binsDone
+    ? `<div class="card"><div class="row between"><div><div class="small muted">Bin night</div><h3>Bins are out</h3></div><span class="chip g">Done</span></div>
+        <div class="small muted">${esc(nameOf(binsDone.by))}, ${clock(binsDone.at)}</div>
+        <div class="bins-ph">${binsDone.photos.map(p => `<img src="${photoUrl(p)}" alt="Bins on the kerb" data-a="zoom" data-p="${p}" loading="lazy">`).join('')}</div>
+        ${isAdmin() ? `<p class="small" style="margin-bottom:0"><button class="link small" data-a="bins-undo" data-d="${S.today}">Undo</button></p>` : ''}</div>`
+    : `<div class="card" style="border-left:5px solid var(--yellow)"><div class="small muted">Bin night</div><h3>${hw === me ? 'Your turn: bins out tonight' : `Bins out tonight: ${esc(binsWho)}`}</h3>
+        <p class="small muted">${hw === me ? 'Put the bins on the kerb, take a photo and confirm. Reminders come every 45 minutes from 7pm until you do.' : `If you put them out for ${esc(binsWho)}, you can confirm it here.`}</p>
+        <button class="btn block ${hw === me ? '' : 'alt'}" data-a="bins-photo">Take photo and confirm</button></div>`;
 
   return `
   <section class="hero" aria-label="This week">
@@ -407,6 +436,7 @@ function vHome() {
   </section>
   ${bath ? `<div class="card row between"><div><div class="small muted">Shared bathroom</div><h3>${esc(bw ? nameOf(bw) : '—')}</h3></div>
     <div class="row">${chip(status(bath))}${bw === me && !['submitted', 'approved'].includes(status(bath)) ? `<button class="btn sm" data-a="open-clean" data-r="bathroom" data-w="${ws}">Start</button>` : ''}</div></div>` : ''}
+  ${binsCard}
   ${installCard()}
   ${waiting.length ? `<h2>Waiting for you</h2><div class="card"><ul class="list">${waiting.join('')}</ul></div>` : ''}
   ${pinned.map(n => `<div class="tipbox"><b>${esc(n.title)}</b>${n.body ? '<br>' + esc(n.body) : ''}</div>`).join('')}
@@ -508,7 +538,8 @@ function vArea() {
     return `<li><button class="check ${on ? 'on' : ''}" ${editable ? `data-a="step" data-i="${i}"` : 'disabled'} aria-label="Step ${i + 1} done"></button><div class="grow ${on ? 'done-text' : ''}">${esc(s)}</div></li>`;
   }).join('')}</ul></div>
   ${a.photo ? `<h3>Photos</h3><div class="photos">${(d.photos || []).map(p => `<div class="ph"><img src="${photoUrl(p)}" alt="Photo of ${esc(a.name)}" data-a="zoom" data-p="${p}" loading="lazy">${editable ? `<button class="x" data-a="ph-del" data-p="${p}" aria-label="Remove photo">×</button>` : ''}</div>`).join('')}
-    ${editable && (d.photos?.length || 0) < 8 ? `<label class="addph">Add photo<input type="file" accept="image/*" capture="environment" multiple data-a="ph-add"></label>` : ''}</div>` : ''}
+    ${editable && (d.photos?.length || 0) < MAX_PHOTOS ? `<button class="addph" data-a="cam">Take photos</button><label class="addph">From gallery<input type="file" accept="image/*" multiple data-a="ph-add"></label>` : ''}</div>
+    ${editable ? `<p class="small muted">Take as many as you need, then tap Done. Up to ${MAX_PHOTOS} per area.</p>` : ''}` : ''}
   <label class="f">Note (optional)</label>
   <textarea id="note" ${editable ? '' : 'disabled'} placeholder="Anything the others should know, such as something broken or running out">${esc(d.note || '')}</textarea>
   ${editable ? `<p><button class="btn block" data-a="save-note">Save and go back</button></p>` : ''}`;
@@ -531,24 +562,110 @@ function vReview() {
     <p><button class="btn block warn" data-a="reject">Send back to fix</button></p></div>` : ''}`;
 }
 
-async function compress(file) {
-  const bmp = await createImageBitmap(file);
-  const scale = Math.min(1, 1400 / Math.max(bmp.width, bmp.height));
+const MAX_PHOTOS = 12;
+const clock = t => new Date(t).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', timeZone: 'Australia/Brisbane' });
+function toJpeg(src, w, h) {
+  const scale = Math.min(1, 1400 / Math.max(w, h));
   const cv = document.createElement('canvas');
-  cv.width = Math.round(bmp.width * scale); cv.height = Math.round(bmp.height * scale);
-  cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+  cv.width = Math.round(w * scale); cv.height = Math.round(h * scale);
+  cv.getContext('2d').drawImage(src, 0, 0, cv.width, cv.height);
   return cv.toDataURL('image/jpeg', 0.72);
 }
-async function addPhotos(files) {
+async function compress(file) {
+  const bmp = await createImageBitmap(file);
+  return toJpeg(bmp, bmp.width, bmp.height);
+}
+async function compressAll(files) {
+  const out = [];
+  for (const f of files) { try { out.push(await compress(f)); } catch { toast('One photo could not be read.'); } }
+  return out;
+}
+
+// In-app camera: take several photos in a row, then Done. Resolves with JPEG data URLs ([] if cancelled).
+function camera(max, title) {
+  return new Promise(resolve => {
+    const shots = [];
+    let stream = null;
+    const m = document.createElement('div'); m.className = 'cam';
+    m.innerHTML = `<div class="cam-top"><button data-c="cancel">Cancel</button><span>${esc(title)}</span><span style="width:52px"></span></div>
+      <div class="cam-view"><video playsinline muted autoplay></video><div class="cam-flash"></div></div>
+      <div class="cam-strip"></div>
+      <div class="cam-bar"><span class="n"></span><button class="cam-shoot" data-c="shoot" aria-label="Take photo"></button><button class="btn ok" data-c="done" disabled>Done</button></div>`;
+    document.body.appendChild(m);
+    const video = m.querySelector('video'), strip = m.querySelector('.cam-strip');
+    const shoot = m.querySelector('.cam-shoot'), done = m.querySelector('[data-c="done"]'), n = m.querySelector('.n');
+    const close = result => { stream?.getTracks().forEach(t => t.stop()); m.remove(); resolve(result); };
+    const draw = () => {
+      strip.innerHTML = shots.map((d, i) => `<div class="t"><img src="${d}" alt=""><button data-c="del" data-i="${i}" aria-label="Remove">×</button></div>`).join('');
+      strip.scrollLeft = strip.scrollWidth;
+      n.textContent = `${shots.length} of ${max}`;
+      done.disabled = !shots.length;
+      done.textContent = shots.length ? `Done (${shots.length})` : 'Done';
+      shoot.disabled = shots.length >= max || !stream;
+    };
+    const fallback = why => {
+      m.querySelector('.cam-view').innerHTML = `<div class="msg"><p>${esc(why)}</p>
+        <label class="btn block">Use the phone camera<input type="file" accept="image/*" capture="environment" data-c="file" hidden></label>
+        <p class="small" style="opacity:.75">One photo at a time. Each one is added below, then tap Done.</p></div>`;
+      m.querySelector('[data-c="file"]').onchange = async e => {
+        const room = max - shots.length;
+        shots.push(...(await compressAll([...e.target.files])).slice(0, room));
+        e.target.value = ''; draw();
+      };
+      draw();
+    };
+    m.onclick = e => {
+      const b = e.target.closest('[data-c]'); if (!b) return;
+      const c = b.dataset.c;
+      if (c === 'shoot') {
+        if (shots.length >= max || !video.videoWidth) return;
+        shots.push(toJpeg(video, video.videoWidth, video.videoHeight));
+        const f = m.querySelector('.cam-flash'); f.style.transition = 'none'; f.style.opacity = '.8';
+        requestAnimationFrame(() => { f.style.transition = ''; f.style.opacity = '0'; });
+        navigator.vibrate?.(30);
+        draw();
+      } else if (c === 'del') { shots.splice(+b.dataset.i, 1); draw(); }
+      else if (c === 'done') close(shots);
+      else if (c === 'cancel') { if (!shots.length || confirm(`Discard ${shots.length} photo${shots.length > 1 ? 's' : ''}?`)) close([]); }
+    };
+    draw();
+    if (!navigator.mediaDevices?.getUserMedia) return fallback('This browser cannot open the camera inside the app.');
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false })
+      .then(async st => {
+        if (!m.isConnected) { st.getTracks().forEach(t => t.stop()); return; }
+        stream = st; video.srcObject = st;
+        try { await video.play(); } catch {}
+        draw();
+      })
+      .catch(() => fallback('Camera access is blocked. Allow the camera for this app in your phone settings, or use the phone camera below.'));
+  });
+}
+
+let UPLOADING = false;
+async function uploadShots(dataUrls) {
+  const total = dataUrls.length, queue = dataUrls.map((d, i) => [i, d]), ids = [];
+  let sent = 0;
+  toast(`Uploading ${total} photo${total > 1 ? 's' : ''}...`);
+  await Promise.all(Array.from({ length: Math.min(3, total) }, async () => {
+    while (queue.length) {
+      const [i, d] = queue.shift();
+      try { ids[i] = (await api('photo', { data: d })).id; } catch (e) { toast(e.message); }
+      if (++sent < total) toast(`Uploading ${sent + 1} of ${total}...`);
+    }
+  }));
+  return ids.filter(Boolean);
+}
+async function addAreaPhotos(dataUrls) {
   const { r, w, id } = VIEW;
-  const c = cleanRec(r, w), cur = c?.areas[id]?.photos || [];
-  const ids = [...cur];
-  toast('Uploading...');
-  for (const f of [...files].slice(0, 8 - ids.length)) {
-    try { const { id: pid } = await api('photo', { data: await compress(f) }); ids.push(pid); }
-    catch (e) { toast(e.message); }
-  }
-  await act('clean.save', { rosterId: r, weekStart: w, areaId: id, photos: ids }, 'Photos saved.');
+  if (!dataUrls.length || UPLOADING) return;
+  UPLOADING = true;
+  try {
+    const cur = cleanRec(r, w)?.areas[id]?.photos || [];
+    const room = MAX_PHOTOS - cur.length;
+    if (dataUrls.length > room) toast(`Only ${room} more fit in this area. The first ${room} will be added.`);
+    const ids = await uploadShots(dataUrls.slice(0, room));
+    if (ids.length) await act('clean.save', { rosterId: r, weekStart: w, areaId: id, photos: [...cur, ...ids] }, `${ids.length} photo${ids.length > 1 ? 's' : ''} added.`);
+  } finally { UPLOADING = false; }
 }
 
 // ---------------- Shopping ----------------
@@ -718,6 +835,24 @@ document.addEventListener('click', async e => {
       await act('clean.save', { rosterId: VIEW.r, weekStart: VIEW.w, areaId: VIEW.id, checked: [...cur] });
       break;
     }
+    case 'cam': {
+      const cur = cleanRec(VIEW.r, VIEW.w)?.areas[VIEW.id]?.photos?.length || 0;
+      const shots = await camera(MAX_PHOTOS - cur, AREAS[VIEW.id].name);
+      await addAreaPhotos(shots);
+      break;
+    }
+    case 'bins-photo': {
+      if (UPLOADING) break;
+      const shots = await camera(3, 'Bins on the kerb');
+      if (!shots.length) break;
+      UPLOADING = true;
+      try {
+        const ids = await uploadShots(shots);
+        if (ids.length) await act('bins.out', { photos: ids }, 'Bins confirmed. Reminders stopped.');
+      } finally { UPLOADING = false; }
+      break;
+    }
+    case 'bins-undo': if (confirm('Undo the bins confirmation for tonight? Reminders will start again.')) await act('bins.reset', { date: D.d }, 'Undone.'); break;
     case 'ph-del': {
       const c = cleanRec(VIEW.r, VIEW.w);
       await act('clean.save', { rosterId: VIEW.r, weekStart: VIEW.w, areaId: VIEW.id, photos: (c.areas[VIEW.id].photos || []).filter(p => p !== D.p) }, 'Photo removed.');
@@ -785,9 +920,12 @@ document.addEventListener('click', async e => {
   }
 });
 document.addEventListener('change', e => {
-  if (e.target.matches('[data-a="ph-add"]') && e.target.files.length) addPhotos(e.target.files);
+  if (e.target.matches('[data-a="ph-add"]') && e.target.files.length) {
+    const files = [...e.target.files]; e.target.value = '';
+    compressAll(files).then(addAreaPhotos);
+  }
 });
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S && !BUSY && VIEW?.kind !== 'area') refresh(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S && !BUSY && !UPLOADING && !document.querySelector('.cam') && VIEW?.kind !== 'area') refresh(); });
 
 boot();
 </script>

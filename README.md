@@ -3,7 +3,7 @@
 Single-page app (`public/index.html`, vanilla JS, no build step) with two Netlify Functions and Netlify Blobs for storage.
 
 - `netlify/functions/api.mjs` — sign-in, data and photo upload (`/api/*`)
-- `netlify/functions/reminders.mjs` — runs hourly and sends reminders on Brisbane time
+- `netlify/functions/reminders.mjs` — runs every 15 minutes and sends reminders on Brisbane time
 - `lib/core.mjs` — shared logic (rosters, PINs, notifications)
 
 ## Deploy
@@ -24,6 +24,7 @@ Single-page app (`public/index.html`, vanilla JS, no build step) with two Netlif
 | Sunday 9am | Everyone | Who is on each roster this week |
 | Sun–Wed at the roster's reminder time (default 6pm) | Person on duty | Clean reminder, until photos are submitted |
 | Monday 6pm | Everyone | Bins out tonight, naming who is on bins |
+| Monday 7pm to 11:30pm, every 45 min | Person on bins | Bins out, until someone confirms with a photo in the app |
 | Tuesday 6pm | House-clean person | Bring bins back in |
 | Thursday 9am | Everyone | Clean not submitted |
 | Daily 7pm | Anyone who has not reviewed | Clean waiting for approval |
@@ -31,7 +32,7 @@ Single-page app (`public/index.html`, vanilla JS, no build step) with two Netlif
 | 9am, day before / on the day | Payer | Payment due |
 | 9am, 2 days overdue | Payer and Bernard | Payment overdue |
 
-Instant notifications: new notice, new date, submitted clean, approval or rejection, swap request and answer, payment marked paid.
+Instant notifications: bins confirmed, new notice, new date, submitted clean, approval or rejection, swap request and answer, payment marked paid.
 
 A clean is approved once 2 other people approve it (`REQUIRED_APPROVALS` in `lib/core.mjs`).
 

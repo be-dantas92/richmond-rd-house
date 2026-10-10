@@ -1,6 +1,6 @@
 import {
   USERS, USER_IDS, nameOf, isAdmin, REQUIRED_APPROVALS,
-  load, save, photoStore, todayBne, addDays, weekStartOf, assignee,
+  load, save, photoStore, todayBne, addDays, weekStartOf, assignee, dow,
   signToken, verifyToken, hashPin, checkPin, newTopic, uid, notify,
 } from '../../lib/core.mjs';
 
@@ -11,6 +11,8 @@ class HttpError extends Error { constructor(status, msg) { super(msg); this.stat
 const fail = (status, msg) => { throw new HttpError(status, msg); };
 const need = (cond, msg = 'Missing or invalid information.') => { if (!cond) fail(400, msg); };
 const clean = (s, max = 500) => String(s ?? '').trim().slice(0, max);
+const MAX_PHOTOS = 12;
+const photoId = p => String(p ?? '').replace(/[^a-z0-9]/g, '').slice(0, 40);
 const isDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '');
 
 function defaultRosters(order, today) {
@@ -29,9 +31,9 @@ function defaultRosters(order, today) {
 
 async function buildState(me) {
   const today = todayBne();
-  const [auth, rosters, cleanings, swaps, shopping, notices, events, payments, feed] = await Promise.all([
+  const [auth, rosters, cleanings, swaps, shopping, notices, events, payments, feed, bins] = await Promise.all([
     load('auth', {}), load('rosters', {}), load('cleanings', {}), load('swaps', []), load('shopping', []),
-    load('notices', []), load('events', []), load('payments', { defs: [], paid: {} }), load('feed', []),
+    load('notices', []), load('events', []), load('payments', { defs: [], paid: {} }), load('feed', []), load('bins', {}),
   ]);
   const recent = Object.values(cleanings)
     .filter(c => c.weekStart >= addDays(today, -120))
@@ -46,6 +48,7 @@ async function buildState(me) {
     shopping, notices,
     events: events.filter(e => e.date >= addDays(today, -30)).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)),
     payments,
+    bins: Object.fromEntries(Object.entries(bins).filter(([d]) => d >= addDays(today, -35))),
     feed: feed.filter(f => f.to.includes(me)).slice(0, 60),
   };
 }
@@ -131,7 +134,7 @@ const actions = {
     need(c.status !== 'approved', 'This clean has already been approved.');
     const ar = c.areas[a.areaId] || { checked: [], photos: [], note: '' };
     if (Array.isArray(a.checked)) ar.checked = a.checked.filter(n => Number.isInteger(n)).slice(0, 40);
-    if (Array.isArray(a.photos)) ar.photos = a.photos.map(p => clean(p, 40)).slice(0, 8);
+    if (Array.isArray(a.photos)) ar.photos = a.photos.map(photoId).filter(Boolean).slice(0, MAX_PHOTOS);
     if (a.note !== undefined) ar.note = clean(a.note, 400);
     c.areas[a.areaId] = ar;
     if (c.status === 'rejected') c.status = 'draft';
@@ -170,6 +173,27 @@ const actions = {
       await notify([c.user], 'Clean needs another look', `${nameOf(me)}: ${reason}`, 'warning');
     }
     await save('cleanings', cleanings);
+  },
+
+  // ----- bins (Monday night) -----
+  async 'bins.out'(me, a) {
+    const today = todayBne();
+    need(dow(today) === 1, 'Bins are confirmed on Monday, bin night.');
+    const photos = Array.isArray(a.photos) ? a.photos.map(photoId).filter(Boolean).slice(0, 4) : [];
+    need(photos.length, 'Take a photo of the bins on the kerb.');
+    const bins = await load('bins', {});
+    need(!bins[today], 'Bins are already confirmed for tonight.');
+    bins[today] = { by: me, at: Date.now(), photos };
+    for (const d of Object.keys(bins)) if (d < addDays(today, -60)) delete bins[d];
+    await save('bins', bins);
+    await notify(USER_IDS.filter(u => u !== me), 'Bins are out', `${nameOf(me)} put the bins on the kerb.`, 'wastebasket');
+  },
+  async 'bins.reset'(me, a) {
+    need(isAdmin(me), 'Only Bernard can undo a bins confirmation.');
+    const bins = await load('bins', {});
+    need(isDate(a.date) && bins[a.date], 'Nothing to undo.');
+    delete bins[a.date];
+    await save('bins', bins);
   },
 
   // ----- shopping -----

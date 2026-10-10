@@ -1,14 +1,16 @@
-// Runs every hour. Works out Brisbane time and sends whatever is due at this hour.
+// Runs every 15 minutes. Works out Brisbane time and sends whatever is due at this hour.
 import {
   USER_IDS, nameOf, isAdmin, load, save, bneNow, ymd, addDays, daysBetween,
   weekStartOf, assignee, occurrences, notify,
 } from '../../lib/core.mjs';
 
+const BIN_NAG_START = 19 * 60, BIN_NAG_END = 23 * 60 + 30, BIN_NAG_EVERY = 45; // Brisbane time, minutes
 const DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export async function runReminders(now = new Date()) {
   const n = bneNow(now);
   const today = ymd(n), hour = n.getUTCHours(), wd = n.getUTCDay();
+  const mins = hour * 60 + n.getUTCMinutes();
   const sent = await load('sent', {});
   const out = [];
   const once = async (key, to, title, body, tags) => {
@@ -18,8 +20,8 @@ export async function runReminders(now = new Date()) {
     await notify(to, title, body, tags);
   };
 
-  const [rosters, cleanings, events, payments] = await Promise.all([
-    load('rosters', {}), load('cleanings', {}), load('events', []), load('payments', { defs: [], paid: {} }),
+  const [rosters, cleanings, events, payments, bins] = await Promise.all([
+    load('rosters', {}), load('cleanings', {}), load('events', []), load('payments', { defs: [], paid: {} }), load('bins', {}),
   ]);
   const ws = weekStartOf(today);
 
@@ -52,6 +54,14 @@ export async function runReminders(now = new Date()) {
     if (r.bins && wd === 1 && hour === 18)
       await once(`bins-out:${today}`, USER_IDS, 'Bins out tonight',
         `Bins go to the kerb tonight. ${nameOf(who)} is on bins this week.`, 'wastebasket');
+    // Monday 7pm to 11:30pm, every 45 minutes, until the bins are confirmed with a photo.
+    if (r.bins && wd === 1 && mins >= BIN_NAG_START && mins <= BIN_NAG_END && !bins[today]) {
+      const slot = Math.floor((mins - BIN_NAG_START) / BIN_NAG_EVERY);
+      const last = BIN_NAG_START + slot * BIN_NAG_EVERY >= BIN_NAG_END;
+      await once(`bins-nag:${today}:${slot}`, [who], last ? 'Last call: bins out' : 'Bins out tonight: your turn',
+        `Put the bins on the kerb, then open the app, take a photo and confirm.${last ? '' : ' This reminder repeats every 45 minutes until you do.'}`,
+        last ? 'rotating_light' : 'wastebasket');
+    }
     if (r.bins && wd === 2 && hour === 18)
       await once(`bins-in:${today}`, [who], 'Bring the bins back in', 'Bins come back from the kerb today.', 'wastebasket');
   }
@@ -107,4 +117,4 @@ export default async () => {
   return new Response(JSON.stringify({ sent }), { headers: { 'content-type': 'application/json' } });
 };
 
-export const config = { schedule: '@hourly' };
+export const config = { schedule: '*/15 * * * *' };
